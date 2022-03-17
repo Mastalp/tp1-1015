@@ -1,36 +1,47 @@
+#Hugo de Sousa, Matricule: 20220364
+#Louis-Philippe Roy-Lemaire, Matricule:20074007
+
+
 import tuiles
 
+#Viens de tuiles.py qui sert a obtenir les donnees pour les couleurs et les chiffres/nombres
 colormap = tuiles.colormap
 image = tuiles.images
 
-largeur = len(image[0]) # dependamment de la source
+#largeur prend l'index de n'importe quelle image et le considere comme le nombre de pixel necessaire pour le dessiner
+largeur = len(image[0]) 
 screenWidth = getScreenWidth()
+#N calcule le screenWidth en considerant les dimensions du carre et la largeur de chaque image, donc un 3x3 sera 48px par 48px car 16(largeur) fois 3 equale 48.
 N = int(screenWidth/largeur)
 
-
+#La procedure afficherImage prend en parametres une coordonne x et y pour determiner a partir de quelles pixels les couleurs commenceront a s'afficher. Les deux autres parametres colormap et image sont utiliser pour determiner la couleur de chaque pixels pour une certaine image.
 def afficherImage(x, y, colormap, image):
     tab = image
-# extraction de valeurs colormap pour une tuile dans une string
+    #Extraction des valeurs colormap
     numberString = ''
     for i in tab.copy():
         for j in i:
             numberString += str(j)
+
+    #Accumulateur        
     pos = 0
 
+    #En prenant compte des parametres x et y comme position initiale, l'accumulateur passe a travers les valeurs colormap extraitent et les affichent avec setPixel
     for i in range(x,largeur+x):
         for j in range(y,largeur+y):
             color = int(numberString[pos])
             setPixel(j, i, colormap[color])
             pos+=1
 
-            
+#La procedure afficherTuile prend en parametre x et y defini la position de l'image similairement a des coordonnees dans une grille. Le parametre tuile affiche le chiffre/nombre inserer.            
 def afficherTuile(x, y, tuile):
     tuile=image[tuile]
+    #Multiplier par la largeur dune case pour espacer chaque image
     x=x*largeur
     y=y*largeur
     afficherImage(x, y, colormap, tuile)
 
-    
+#La fonction attendreClic retourne les coordonnees d'ou la personne a lacher le bouton de sa souris. Lorsque le bouton est lacher, x.button == 1 et la boucle se termine.    
 def attendreClic():
     attendre = True
     while attendre == True:
@@ -41,20 +52,23 @@ def attendreClic():
     return x.x, x.y
 
 sol = []
-
+#La fonction permutationAleatoire retourne des compositions de table aleatoire selon la longueur du tableau.
 def permutationAleatoire(n):
     tableau=[]
     for k in range(n):
         tableau.append(k)
-        
+
+    #Definie la solution gagnante  
     global sol
     sol = tableau.copy()
     sol.pop(0)
     sol.append(0)
 
+
+    #Cette methode de brassage se differencie a la methode naive grace au deplacement progressif dans le tableau apres avoir swap les chiffres. (Src = Notes #8 Marc Feeley, p.57)
     (n)==len(tableau)
     arrayAleatoire=[]
-    for i in range(len(tableau)-1, -1, -1): # brasser les cartes Marc Feeley#8 & p.57
+    for i in range(len(tableau)-1, -1, -1):
         j = math.floor(random() * (i+1))
         temp = tableau[i]
         tableau[i] = tableau[j]
@@ -63,14 +77,14 @@ def permutationAleatoire(n):
 
     return arrayAleatoire
 
-
+#Une fonction utiliser localement dans la fct inversions(tab, x) servant a trouver la position "x" dans l'index de la tab evaluer
 def position(tab, x):
         for i in range(len(tab)):
             if tab[i] == x:
                 return i
         return -1
     
-    
+#La fonction inversions prend en parametre un tableau et un "x" et retourne un tableau (et sa longueur) avec les valeurs plus petites que "x" dans le reste de l'index.    
 def inversions(tab, x):
 
     tab2 = tab.copy()
@@ -82,7 +96,6 @@ def inversions(tab, x):
             tab3.append(j)
                     
     return len(tab3)
-
 
 def soluble(tab):
     somme = 0
